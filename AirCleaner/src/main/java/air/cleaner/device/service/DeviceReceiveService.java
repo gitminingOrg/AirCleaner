@@ -53,6 +53,8 @@ public class DeviceReceiveService {
 		boolean update = cleanerStatusCacheManager.updateCleanerStatus(cleanerStatus);
 		if (!update) {
 			LOG.warn("update cleaner status cache failed");
+		}else {
+			LOG.info("update succeed");
 		}
 	}
 	
@@ -67,6 +69,7 @@ public class DeviceReceiveService {
 		
 		if (deviceInfo == null) {
 			//////init device
+			deviceInfo = new DeviceInfo();
 		}
 		Field[] fields = DeviceInfo.class.getDeclaredFields();
 		for (Field field : fields) {
@@ -81,7 +84,7 @@ public class DeviceReceiveService {
 							method.invoke(deviceInfo, value);
 							deviceInfoCacheManager.updateDevice(deviceInfo);
 						} catch (Exception e) {
-							LOG.error("no such set method <int>", e);
+							LOG.error("no such set method <int>" + methodName, e);
 						}
 					}else if (field.getGenericType().getTypeName().equals("java.lang.String")) {
 						String value = ByteUtil.byteToServer(packet.getDATA());
@@ -90,7 +93,7 @@ public class DeviceReceiveService {
 							method.invoke(deviceInfo, value);
 							deviceInfoCacheManager.updateDevice(deviceInfo);
 						} catch (Exception e) {
-							LOG.error("no such set method <String>", e);
+							LOG.error("no such set method <String>" + methodName, e);
 						}
 					}
 					break;
@@ -99,15 +102,19 @@ public class DeviceReceiveService {
 		}
 	}
 	
+	/**
+	 * update a single attribute among cleaner status
+	 * @param packet
+	 */
 	public void updateSingleCacheCleanerStatus(MCPPacket packet){
 		int command = packet.getCID()[0];
 		long deviceID = ByteUtil.byteArrayToLong(packet.getUID());
-		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
+		CleanerStatus cleanerStatus = cleanerStatusCacheManager.getCleanerStatus(deviceID);
 		
-		if (deviceInfo == null) {
-			//////init device
+		if (cleanerStatus == null) {
+			//////init status
 		}
-		Field[] fields = DeviceInfo.class.getDeclaredFields();
+		Field[] fields = CleanerStatus.class.getDeclaredFields();
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Command.class)) {
 				Command anno = field.getAnnotation(Command.class);
@@ -116,20 +123,29 @@ public class DeviceReceiveService {
 					if (field.getGenericType().getTypeName().equals("int")) {
 						int value = ByteUtil.byteArrayToInt(packet.getDATA());
 						try {
-							Method method = deviceInfo.getClass().getDeclaredMethod(methodName, int.class);
-							method.invoke(deviceInfo, value);
-							deviceInfoCacheManager.updateDevice(deviceInfo);
+							Method method = cleanerStatus.getClass().getDeclaredMethod(methodName, int.class);
+							method.invoke(cleanerStatus, value);
+							cleanerStatusCacheManager.updateCleanerStatus(cleanerStatus);
 						} catch (Exception e) {
-							LOG.error("no such set method <int>", e);
+							LOG.error("no such set method <int>" + methodName, e);
 						}
 					}else if (field.getGenericType().getTypeName().equals("java.lang.String")) {
 						String value = ByteUtil.byteToServer(packet.getDATA());
 						try {
-							Method method = deviceInfo.getClass().getDeclaredMethod(methodName, String.class);
-							method.invoke(deviceInfo, value);
-							deviceInfoCacheManager.updateDevice(deviceInfo);
+							Method method = cleanerStatus.getClass().getDeclaredMethod(methodName, String.class);
+							method.invoke(cleanerStatus, value);
+							cleanerStatusCacheManager.updateCleanerStatus(cleanerStatus);
 						} catch (Exception e) {
-							LOG.error("no such set method <String>", e);
+							LOG.error("no such set method <String>" +methodName, e);
+						}
+					}else if (field.getGenericType().getTypeName().equals("long")) {
+						long value = ByteUtil.byteArrayToLong(packet.getDATA());
+						try {
+							Method method = cleanerStatus.getClass().getDeclaredMethod(methodName, long.class);
+							method.invoke(cleanerStatus, value);
+							cleanerStatusCacheManager.updateCleanerStatus(cleanerStatus);
+						} catch (Exception e) {
+							LOG.error("no such set method <long>" +methodName, e);
 						}
 					}
 					break;
