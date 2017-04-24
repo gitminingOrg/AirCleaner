@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import air.cleaner.device.service.DeviceControlService;
 import air.cleaner.device.service.DeviceReceiveService;
 import air.cleaner.model.CleanerStatus;
 import air.cleaner.model.ResultMap;
+import air.cleaner.utils.Constant;
 
 @RequestMapping(value="/status")
 @RestController
@@ -16,6 +18,11 @@ public class CleanerStatusController {
 	private DeviceReceiveService deviceReceiveService;
 	public void setDeviceReceiveService(DeviceReceiveService deviceReceiveService) {
 		this.deviceReceiveService = deviceReceiveService;
+	}
+	@Autowired
+	private DeviceControlService deviceControlService;
+	public void setDeviceControlService(DeviceControlService deviceControlService) {
+		this.deviceControlService = deviceControlService;
 	}
 
 	@RequestMapping(value="/device/{deviceID}")
@@ -28,6 +35,91 @@ public class CleanerStatusController {
 		}else{
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
 			resultMap.addContent("status", cleanerStatus);
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/power/{deviceID}/{mode}")
+	public ResultMap powerControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+		ResultMap resultMap = new ResultMap();
+		boolean result = deviceControlService.statusControl(Constant.POWER, mode, device);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态失败");
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/heat/{deviceID}/{mode}")
+	public ResultMap heatControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+		ResultMap resultMap = new ResultMap();
+		boolean result = deviceControlService.statusControl(Constant.HEAT, mode, device);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态失败");
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/UV/{deviceID}/{mode}")
+	public ResultMap uvControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+		ResultMap resultMap = new ResultMap();
+		boolean result = deviceControlService.statusControl(Constant.UV, mode, device);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态失败");
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/mode/{deviceID}/{mode}")
+	public ResultMap modeControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+		ResultMap resultMap = new ResultMap();
+		boolean result = deviceControlService.statusControl(Constant.UV, mode, device);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态失败");
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/velocity/{deviceID}/{velocity}")
+	public ResultMap velocityControl(@PathVariable("deviceID")long device, @PathVariable("velocity")int velocity){
+		ResultMap resultMap = new ResultMap();
+		boolean result = deviceControlService.statusControl(Constant.VELOCITY, velocity, device);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("更新状态成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_FAILURE);
+			resultMap.setInfo("更新状态失败");
+		}
+		return resultMap;
+	}
+	
+	@RequestMapping(value="/command/{deviceID}/{CTF}/{command}/{data}")
+	public ResultMap generalCommand(@PathVariable("deviceID")long device, @PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data){
+		ResultMap resultMap = new ResultMap();
+		
+		boolean result = deviceControlService.commandHandler(CTF, command, data, device, CleanerStatus.class);
+		if (result) {
+			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
+			resultMap.setInfo("获取成功");
+		}else{
+			resultMap.setStatus(ResultMap.STATUS_FAILURE);
+			resultMap.setInfo("获取失败");
 		}
 		return resultMap;
 	}

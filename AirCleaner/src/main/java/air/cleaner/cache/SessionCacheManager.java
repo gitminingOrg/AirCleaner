@@ -27,4 +27,12 @@ public class SessionCacheManager {
 		}
 		return true;
 	}
+	
+	public boolean removeSession(long deviceID){
+		IoSession session =  sessionMap.remove(deviceID);
+		if (session != null) {
+			return true;
+		}
+		return false;
+	}
 }

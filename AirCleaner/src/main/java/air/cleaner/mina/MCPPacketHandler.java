@@ -1,5 +1,6 @@
 package air.cleaner.mina;
 
+import java.nio.channels.SeekableByteChannel;
 import java.util.Set;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -69,9 +70,13 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 
 	@Override
 	public void messageSent(IoSession session, Object message) throws Exception {
+		if (session.isClosing()) {
+			LOG.error("Client has already been disconnected");
+			return;
+		}
 		if(message instanceof MCPPacket){
 			super.messageSent(session, message);
-			LOG.debug("Message sent ! " +message);
+			LOG.info("Message sent ! " +message);
 		}else{
 			LOG.error("Message is not in form of MCPPacket! " + message);
 		}
@@ -80,7 +85,7 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
 		LOG.debug("session closed" + session);
-		super.sessionClosed(session);
+		session.close(true);
 	}
 
 	@Override
