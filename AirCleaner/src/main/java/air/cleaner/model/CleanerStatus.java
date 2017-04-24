@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import air.cleaner.annotation.AQIData;
+import air.cleaner.annotation.Command;
+import air.cleaner.utils.Constant;
 import air.cleaner.utils.MethodUtil;
 
 public class CleanerStatus implements Serializable{
@@ -12,25 +14,35 @@ public class CleanerStatus implements Serializable{
 	private static final long serialVersionUID = 3050484443988023484L;
 	
 	private long deviceID;
-	@AQIData(start=0x00,length=2,name="pm25")
+	@AQIData(start=0x00,length=2,name=Constant.PM25)
 	private int pm25;
-	@AQIData(start=0x02,length=1,name="temperature")
+	@AQIData(start=0x02,length=1,name=Constant.TEMPERATURE)
 	private int temperature;
-	@AQIData(start=0x03,length=1,name="humidity")
+	@AQIData(start=0x03,length=1,name=Constant.HUMIDITY)
 	private int humidity;
-	@AQIData(start=0x04,length=2,name="HCHO")
+	@AQIData(start=0x04,length=2,name=Constant.HCHO)
 	private int HCHO;
-	@AQIData(start=0x06,length=2,name="CO2")
+	@AQIData(start=0x06,length=2,name=Constant.CO2)
 	private int CO2;
-	@AQIData(start=0x08,length=2,name="velocity")
+	
+	@Command(id=0x06,length=2,name=Constant.VELOCITY)
+	@AQIData(start=0x08,length=2,name=Constant.VELOCITY)
 	private int velocity;
-	@AQIData(start=0x0A,length=1,name="power")
+	
+	@Command(id=0x04,length=1,name=Constant.POWER)
+	@AQIData(start=0x0A,length=1,name=Constant.POWER)
 	private int power;
-	@AQIData(start=0x0B,length=1,name="workMode")
+	
+	@Command(id=0x05,length=1,name=Constant.WORKMODE)
+	@AQIData(start=0x0B,length=1,name=Constant.WORKMODE)
 	private int workMode;
-	@AQIData(start=0x0C,length=1,name="UV")
+	
+	@Command(id=0x07,length=1,name=Constant.UV)
+	@AQIData(start=0x0C,length=1,name=Constant.UV)
 	private int UV;
-	@AQIData(start=0x0D,length=1,name="heat")
+	
+	@Command(id=0x08,length=1,name=Constant.HEAT)
+	@AQIData(start=0x0D,length=1,name=Constant.HEAT)
 	private int heat;
 
 	public long getDeviceID() {

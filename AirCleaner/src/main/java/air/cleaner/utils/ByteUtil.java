@@ -86,8 +86,8 @@ public class ByteUtil {
 		return sb.toString();
 	}
 	
-	public static byte[] serverToByte(String server){
-		byte[] result = new byte[20];
+	public static byte[] serverToByte(String server , int length){
+		byte[] result = new byte[length];
 		char[] serverArray = server.toCharArray();
 		for (int i=0; i<serverArray.length; i++) {
 			result[i] = (byte) serverArray[i];

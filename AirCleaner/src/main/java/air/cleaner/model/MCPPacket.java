@@ -20,8 +20,21 @@ public class MCPPacket implements Serializable{
 	
 	
 	
+	public MCPPacket(byte[] cTF, byte[] cID, byte[] uID,
+			byte[] lEN, byte[] dATA, byte[] cRC) {
+		FRH = new byte[]{-0x11};
+		CTF = cTF;
+		CID = cID;
+		UID = uID;
+		LEN = lEN;
+		DATA = dATA;
+		CRC = cRC;
+		FRT = new byte[]{-0x12};
+	}
+	
 	public MCPPacket(byte[] fRH, byte[] cTF, byte[] cID, byte[] uID,
 			byte[] lEN, byte[] dATA, byte[] cRC, byte[] fRT) {
+		super();
 		FRH = fRH;
 		CTF = cTF;
 		CID = cID;
@@ -31,6 +44,8 @@ public class MCPPacket implements Serializable{
 		CRC = cRC;
 		FRT = fRT;
 	}
+
+
 	public byte[] getFRH() {
 		return FRH;
 	}
