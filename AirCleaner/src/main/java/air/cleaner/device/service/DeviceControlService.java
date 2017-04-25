@@ -117,6 +117,7 @@ public class DeviceControlService {
 		try {
 			mcpPacketHandler.messageSent(session, packet);
 			LOG.info("send message to " + session + " :" +packet);
+
 		} catch (Exception e) {
 			LOG.error("send message failed ! message : " + packet, e);
 		}

@@ -103,23 +103,8 @@ public class CleanerStatusController {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
 			resultMap.setInfo("更新状态成功");
 		}else{
-			resultMap.setStatus(ResultMap.STATUS_FAILURE);
-			resultMap.setInfo("更新状态失败");
-		}
-		return resultMap;
-	}
-	
-	@RequestMapping(value="/command/{deviceID}/{CTF}/{command}/{data}")
-	public ResultMap generalCommand(@PathVariable("deviceID")long device, @PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data){
-		ResultMap resultMap = new ResultMap();
-		
-		boolean result = deviceControlService.commandHandler(CTF, command, data, device, CleanerStatus.class);
-		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
-			resultMap.setInfo("获取成功");
-		}else{
-			resultMap.setStatus(ResultMap.STATUS_FAILURE);
-			resultMap.setInfo("获取失败");
+			resultMap.setInfo("更新状态失败");
 		}
 		return resultMap;
 	}
