@@ -27,7 +27,11 @@ public class DeviceInfoCacheManager {
 			return false;
 		}
 		String key = DEVICE_+deviceInfo.getDeviceID();
-		memcachedClient.replace(key, 0, deviceInfo);
+		if (memcachedClient.get(key) == null) {
+			memcachedClient.add(key, 0, deviceInfo);
+		}else{
+			memcachedClient.replace(key, 0, deviceInfo);
+		}
 		return true;
 	}
 }

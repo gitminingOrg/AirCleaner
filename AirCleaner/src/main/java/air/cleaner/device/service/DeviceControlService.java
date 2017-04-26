@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import air.cleaner.annotation.Command;
 import air.cleaner.cache.SessionCacheManager;
-import air.cleaner.mina.MCPPacketHandler;
 import air.cleaner.model.CleanerStatus;
 import air.cleaner.model.DeviceInfo;
 import air.cleaner.model.MCPPacket;
@@ -22,12 +21,6 @@ import air.cleaner.utils.Constant;
 public class DeviceControlService {
 	
 	public static Logger LOG = LoggerFactory.getLogger(DeviceControlService.class);
-	
-	@Autowired
-	private MCPPacketHandler mcpPacketHandler;
-	public void setMcpPacketHandler(MCPPacketHandler mcpPacketHandler) {
-		this.mcpPacketHandler = mcpPacketHandler;
-	}
 	
 	@Autowired
 	private SessionCacheManager sessionCacheManager;
@@ -115,9 +108,7 @@ public class DeviceControlService {
 			return false;
 		}
 		try {
-			mcpPacketHandler.messageSent(session, packet);
-			LOG.info("send message to " + session + " :" +packet);
-
+			session.write(packet);
 		} catch (Exception e) {
 			LOG.error("send message failed ! message : " + packet, e);
 		}

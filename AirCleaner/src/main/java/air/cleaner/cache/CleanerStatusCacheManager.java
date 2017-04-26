@@ -41,7 +41,7 @@ public class CleanerStatusCacheManager {
 		}
 		String key = "status."+deviceID;
 		LOG.debug("UPDATE STATUS : " + key);
-		if (memcachedClient.get("key") == null) {
+		if (memcachedClient.get(key) == null) {
 			memcachedClient.add(key, 0, cleanerStatus);
 		}else{
 			memcachedClient.replace(key, 0, cleanerStatus);

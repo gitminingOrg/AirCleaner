@@ -15,7 +15,7 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 	@Override
 	protected boolean doDecode(IoSession session, IoBuffer in,
 			ProtocolDecoderOutput out) throws Exception {
-		LOG.debug("start decode");
+		LOG.info("start decode");
 		//the minimum length of MCP packet should be 19 bytes
 		if(in.remaining() >= 19){
 			byte[] FRH = new byte[1];

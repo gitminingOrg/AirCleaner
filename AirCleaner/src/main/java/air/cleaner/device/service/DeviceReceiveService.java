@@ -63,7 +63,7 @@ public class DeviceReceiveService {
 	 * @param packet
 	 */
 	public void updateCacheDeviceInfo(MCPPacket packet){
-		int command = packet.getCID()[0];
+		int command = ByteUtil.byteArrayToInt(packet.getCID());
 		long deviceID = ByteUtil.byteArrayToLong(packet.getUID());
 		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
 		
@@ -107,7 +107,8 @@ public class DeviceReceiveService {
 	 * @param packet
 	 */
 	public void updateSingleCacheCleanerStatus(MCPPacket packet){
-		int command = packet.getCID()[0];
+		int command = ByteUtil.byteArrayToInt(packet.getCID());
+		LOG.info("控制指令为："+command);
 		long deviceID = ByteUtil.byteArrayToLong(packet.getUID());
 		CleanerStatus cleanerStatus = cleanerStatusCacheManager.getCleanerStatus(deviceID);
 		

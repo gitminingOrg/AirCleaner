@@ -2,12 +2,17 @@ package air.cleaner.model;
 
 import java.io.Serializable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import air.cleaner.utils.ByteUtil;
+import air.cleaner.utils.CRC16;
 
 
 public class MCPPacket implements Serializable{
 
 	private static final long serialVersionUID = 6172522038548028403L;
+	public transient static Logger LOG = LoggerFactory.getLogger(MCPPacket.class);
 	
 	private byte[] FRH;
 	private byte[] CTF;
@@ -84,7 +89,20 @@ public class MCPPacket implements Serializable{
 		if(packet.FRT[0] != -0x12){
 			return false;
 		}
+		
+		int expectCRC = CRC16.CRC_XModem(ByteUtil.concatAll(packet.CTF, packet.CID, packet.UID, packet.LEN, packet.DATA));
+		int actualCRC = ByteUtil.byteArrayToInt(packet.CRC);
+		if (expectCRC != actualCRC) {
+			LOG.error("CRC check failed, expect :" + expectCRC +", actual : " + actualCRC);
+			return false;
+		}
 		return true;
+	}
+	
+	public void calCRC(){
+		int expectCRC = CRC16.CRC_XModem(ByteUtil.concatAll(CTF, CID, UID, LEN, DATA));
+		byte[] CRC = ByteUtil.intToByteArray(expectCRC, 2);
+		this.CRC = CRC;
 	}
 	
 	public byte[] toByte(){

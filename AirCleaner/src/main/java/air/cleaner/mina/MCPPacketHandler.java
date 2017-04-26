@@ -1,10 +1,11 @@
 package air.cleaner.mina;
 
-import java.nio.channels.SeekableByteChannel;
 import java.util.Set;
 
+import org.apache.mina.core.future.CloseFuture;
+import org.apache.mina.core.future.IoFuture;
+import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +52,16 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 				//send return packet
 				packet.setLEN(new byte[]{0x01});
 				packet.setDATA(new byte[]{0x00});
+				packet.calCRC();
 				session.write(packet);
 			}else{
 				int command = ByteUtil.byteArrayToInt(((MCPPacket) message).getCID());
 				if(deviceSet.contains(command)){
 					deviceReceiveService.updateCacheDeviceInfo((MCPPacket)message);
+					LOG.info("new message of device info" + message);
 				}else if(statusSet.contains(command)){
 					deviceReceiveService.updateSingleCacheCleanerStatus((MCPPacket)message);
+					LOG.info("new message of cleaner status" + message);
 				}else{
 					LOG.error("unrecognized cid" + message);
 				}
@@ -70,28 +74,32 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 
 	@Override
 	public void messageSent(IoSession session, Object message) throws Exception {
+		LOG.info("Message sending .......... " +message);
 		if (session.isClosing()) {
 			LOG.error("Client has already been disconnected");
 			return;
-		}
-		if(message instanceof MCPPacket){
-			super.messageSent(session, message);
-			LOG.info("Message sent ! " +message);
-		}else{
-			LOG.error("Message is not in form of MCPPacket! " + message);
 		}
 	}
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
 		LOG.debug("session closed" + session);
-		session.close(true);
+		CloseFuture closeFuture = session.close(true);
+		closeFuture.addListener(new IoFutureListener<IoFuture>() {
+			@Override
+			public void operationComplete(IoFuture future) {
+				if(future instanceof CloseFuture){
+					((CloseFuture) future).setClosed();
+					LOG.info("sessionClosed" + future.getSession());
+				}
+			}
+		});
 	}
-
+	
 	@Override
-	public void sessionIdle(IoSession session, IdleStatus status)
+	public void exceptionCaught(IoSession session, Throwable cause)
 			throws Exception {
-		LOG.debug("session idle" + session);
-		super.sessionIdle(session, status);
+		LOG.error("message deliever exception caught", cause);
+		super.exceptionCaught(session, cause);
 	}
 }
