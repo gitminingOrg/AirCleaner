@@ -55,7 +55,7 @@ public class DeviceInfoController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/server/{deviceID}/{port}")
+	@RequestMapping(value="/port/{deviceID}/{port}")
 	public ResultMap serverPortControl(@PathVariable("deviceID") long device, @PathVariable("port")String port){
 		ResultMap resultMap = new ResultMap();
 		boolean result = deviceControlService.infoControl(Constant.SERVER_PORT, port, device);
