@@ -21,13 +21,11 @@ public class CleanerCodeFactory implements ProtocolCodecFactory {
     }
 	@Override
 	public ProtocolEncoder getEncoder(IoSession session) throws Exception {
-		// TODO Auto-generated method stub
 		return encoder;
 	}
 
 	@Override
 	public ProtocolDecoder getDecoder(IoSession session) throws Exception {
-		// TODO Auto-generated method stub
 		return decoder;
 	}
 

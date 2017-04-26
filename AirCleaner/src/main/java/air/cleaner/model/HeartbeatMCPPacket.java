@@ -9,6 +9,11 @@ import air.cleaner.annotation.AQIData;
 import air.cleaner.utils.ByteUtil;
 import air.cleaner.utils.MethodUtil;
 
+/**
+ * this is the heartbeat form-like MCPPacket, specialized for AQI heartbeat data
+ * @author owenchen
+ *
+ */
 public class HeartbeatMCPPacket extends MCPPacket implements Serializable{
 	private static final long serialVersionUID = -5164127950034302166L;
 

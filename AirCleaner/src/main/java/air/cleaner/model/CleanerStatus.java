@@ -145,6 +145,10 @@ public class CleanerStatus implements Serializable{
 		this.light = light;
 	}
 
+	/**
+	 * generate default cleaner status
+	 * @return
+	 */
 	public static CleanerStatus generateDefault(){
 		CleanerStatus cleanerStatus = new CleanerStatus();
 		Field[] fields = cleanerStatus.getClass().getDeclaredFields();

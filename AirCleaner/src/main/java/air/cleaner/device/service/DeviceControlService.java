@@ -28,25 +28,63 @@ public class DeviceControlService {
 		this.sessionCacheManager = sessionCacheManager;
 	}
 
+	/**
+	 * control cleaner status, like Power, velocity, heat, UV
+	 * @param command
+	 * @param input
+	 * @param deviceID
+	 * @return
+	 */
 	public <T> boolean statusControl(String command, T input, long deviceID){
 		int CTF = Constant.CTF_SET;
 		return commandHandler(CTF, command, input, deviceID, CleanerStatus.class);
 	}
 	
+	/**
+	 * query cleaner status
+	 * @param command
+	 * @param input
+	 * @param deviceID
+	 * @return
+	 */
 	public <T> boolean statusQuery(String command, T input, long deviceID){
 		int CTF = Constant.CTF_QUERY;
 		return commandHandler(CTF, command, input, deviceID, CleanerStatus.class);
 	}
+	
+	/**
+	 * control device info, like server, port, heartbeat
+	 * @param command
+	 * @param input
+	 * @param deviceID
+	 * @return
+	 */
 	public <T> boolean infoControl(String command, T input, long deviceID){
 		int CTF = Constant.CTF_SET;
 		return commandHandler(CTF, command, input, deviceID, DeviceInfo.class);
 	}
 	
+	/**
+	 * query device info
+	 * @param command
+	 * @param input
+	 * @param deviceID
+	 * @return
+	 */
 	public <T> boolean infoQuery(String command, T input, long deviceID){
 		int CTF = Constant.CTF_QUERY;
 		return commandHandler(CTF, command, input, deviceID, DeviceInfo.class);
 	}
 	
+	/**
+	 * basic method for command handle
+	 * @param CTF
+	 * @param command
+	 * @param input
+	 * @param deviceID
+	 * @param clazz
+	 * @return
+	 */
 	public <T> boolean commandHandler(int CTF, String command, T input, long deviceID, Class clazz){
 		byte[] data = null;
 		Field[] fields = clazz.getDeclaredFields();
@@ -74,6 +112,12 @@ public class DeviceControlService {
 		return false;
 	}
 	
+	/**
+	 * set mode
+	 * @param deviceID
+	 * @param mode
+	 * @return
+	 */
 	public boolean setMode(long deviceID, String mode){
 		if(mode.equals(Constant.AUTO)){
 			
@@ -86,7 +130,15 @@ public class DeviceControlService {
 		return false;
 	}
 	
-	
+	/**
+	 * send packet in form of MCPPacket
+	 * @param ctfValue
+	 * @param cidValue
+	 * @param uidValue
+	 * @param length
+	 * @param data
+	 * @return
+	 */
 	private boolean sentPacket(int ctfValue, int cidValue, long uidValue, int length, byte[] data){
 		byte[] CTF = ByteUtil.intToByteArray(ctfValue, 1);
 		byte[] CID = ByteUtil.intToByteArray(cidValue, 1);

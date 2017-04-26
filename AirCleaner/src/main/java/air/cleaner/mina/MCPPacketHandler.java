@@ -55,6 +55,7 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 				packet.calCRC();
 				session.write(packet);
 			}else{
+				//classify device info command and cleaner status command
 				int command = ByteUtil.byteArrayToInt(((MCPPacket) message).getCID());
 				if(deviceSet.contains(command)){
 					deviceReceiveService.updateCacheDeviceInfo((MCPPacket)message);
