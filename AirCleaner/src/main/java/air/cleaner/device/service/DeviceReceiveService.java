@@ -3,6 +3,7 @@ package air.cleaner.device.service;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import air.cleaner.model.DeviceInfo;
 import air.cleaner.model.HeartbeatMCPPacket;
 import air.cleaner.model.MCPPacket;
 import air.cleaner.utils.ByteUtil;
+import air.cleaner.utils.Constant;
 import air.cleaner.utils.MethodUtil;
+import air.cleaner.utils.PacketSendUtil;
+import air.cleaner.utils.TimeUtil;
 
 @Service
 public class DeviceReceiveService {
@@ -44,6 +48,12 @@ public class DeviceReceiveService {
 		this.sessionCacheManager = sessionCacheManager;
 	}
 	
+	@Autowired
+	private DeviceControlService deviceControlService;
+	public void setDeviceControlService(DeviceControlService deviceControlService) {
+		this.deviceControlService = deviceControlService;
+	}
+
 	/**
 	 * update cleaner status in cache
 	 * @param packet MCPPacket from device
@@ -165,7 +175,33 @@ public class DeviceReceiveService {
 	 * @return
 	 */
 	public DeviceInfo getDeviceInfo(long deviceID){
-		//////// u should 1st update
+		boolean update = updateDeviceInfo(deviceID);
 		return deviceInfoCacheManager.getDeviceInfo(deviceID);
+	}
+	
+	private boolean updateDeviceInfo(long deviceID){
+		boolean result = true;
+		IoSession session = sessionCacheManager.getSession(deviceID);
+		if (session == null) {
+			LOG.error("device has already been disconnected! " + deviceID);
+		}
+		Field[] fields = DeviceInfo.class.getDeclaredFields();
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(Command.class)) {
+				Command command = field.getAnnotation(Command.class);
+				int ctf = Constant.CTF_QUERY;
+				int cid = command.id();
+				long uid = deviceID;
+				int len = command.length();
+				byte[] data = new byte[len];
+				result = PacketSendUtil.sentPacket(session, ctf, cid, uid, len, data) && result;
+			}
+		}
+		if(!result){
+			LOG.warn("update device info failed!");
+		}
+		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
+		deviceInfo.setUpdateTime(TimeUtil.getCurrentTime());
+		return result;
 	}
 }

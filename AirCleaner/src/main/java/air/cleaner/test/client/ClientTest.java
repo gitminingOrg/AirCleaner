@@ -38,7 +38,7 @@ public class ClientTest extends Thread{
 	    
 	    
 	    while(true){
-	    	ConnectFuture cf = connector.connect(new InetSocketAddress("106.14.172.12", 8888));//建立连接 
+	    	ConnectFuture cf = connector.connect(new InetSocketAddress("127.0.0.1", 8888));//建立连接 
 	    	cf.awaitUninterruptibly();//等待连接创建完成 
 	        
 	        byte[] FRH =new byte[]{-0x11};

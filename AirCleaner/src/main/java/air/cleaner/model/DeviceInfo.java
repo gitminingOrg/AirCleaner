@@ -27,6 +27,9 @@ public class DeviceInfo implements Serializable{
 
 	@Command(id = 0xFF, name = Constant.HARDWARE, length = 0x14)
 	private String hardware;
+	
+	private String updateTime;
+	
 	public long getDeviceID() {
 		return deviceID;
 	}
@@ -69,6 +72,12 @@ public class DeviceInfo implements Serializable{
 	}
 	public void setCycle(int cycle) {
 		this.cycle = cycle;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
 	}
 
 }

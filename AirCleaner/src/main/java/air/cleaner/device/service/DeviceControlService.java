@@ -12,10 +12,9 @@ import air.cleaner.annotation.Command;
 import air.cleaner.cache.SessionCacheManager;
 import air.cleaner.model.CleanerStatus;
 import air.cleaner.model.DeviceInfo;
-import air.cleaner.model.MCPPacket;
 import air.cleaner.utils.ByteUtil;
-import air.cleaner.utils.CRC16;
 import air.cleaner.utils.Constant;
+import air.cleaner.utils.PacketSendUtil;
 
 @Service
 public class DeviceControlService {
@@ -88,6 +87,12 @@ public class DeviceControlService {
 	public <T> boolean commandHandler(int CTF, String command, T input, long deviceID, Class clazz){
 		byte[] data = null;
 		Field[] fields = clazz.getDeclaredFields();
+		
+		IoSession session = sessionCacheManager.getSession(deviceID);
+		if (session == null) {
+			LOG.error("device has already been disconnected. " + deviceID);
+			return false;
+		}
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Command.class)) {
 				Command anno = field.getAnnotation(Command.class);
@@ -105,7 +110,7 @@ public class DeviceControlService {
 				}else if (input instanceof String) {
 					data = ByteUtil.serverToByte((String) input, length);
 				}
-				return sentPacket(CTF, cid, deviceID, length, data);
+				return PacketSendUtil.sentPacket(session, CTF, cid, deviceID, length, data);
 			}
 		}
 		
@@ -122,48 +127,13 @@ public class DeviceControlService {
 		if(mode.equals(Constant.AUTO)){
 			
 		}else if (mode.equals(Constant.SLEEP)) {
-			
+			boolean light = statusControl(Constant.LIGHT, 0, deviceID);
+			boolean velocity = statusControl(Constant.VELOCITY, 100, deviceID);
+			return light&velocity;
 		}else if (mode.equals(Constant.MANUAL)) {
 			
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * send packet in form of MCPPacket
-	 * @param ctfValue
-	 * @param cidValue
-	 * @param uidValue
-	 * @param length
-	 * @param data
-	 * @return
-	 */
-	private boolean sentPacket(int ctfValue, int cidValue, long uidValue, int length, byte[] data){
-		byte[] CTF = ByteUtil.intToByteArray(ctfValue, 1);
-		byte[] CID = ByteUtil.intToByteArray(cidValue, 1);
-		byte[] UID = ByteUtil.longToByteArray(uidValue, 12);
-		byte[] LEN = ByteUtil.intToByteArray(length, 1);
-		
-		byte[] combine = ByteUtil.concatAll(CTF, CID, UID, LEN, data);
-		int crcValue = CRC16.CRC_XModem(combine);
-		byte[] CRC = ByteUtil.intToByteArray(crcValue, 2);
-		MCPPacket packet = new MCPPacket(CTF, CID, UID, LEN, data, CRC);
-		
-		IoSession session = sessionCacheManager.getSession(uidValue);
-		if (session == null) {
-			LOG.error("Try to control unknown device : "+ uidValue);
-			return false;
-		}else if (! session.isConnected()) {
-			LOG.error("client has already been disconnected:  "+ uidValue);
-			sessionCacheManager.removeSession(uidValue);
-			return false;
-		}
-		try {
-			session.write(packet);
-		} catch (Exception e) {
-			LOG.error("send message failed ! message : " + packet, e);
-		}
-		return true;
 	}
 }
