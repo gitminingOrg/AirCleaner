@@ -20,7 +20,24 @@ public class ClientHandler extends IoHandlerAdapter{
         		LOG.debug("宝宝在设置！"+ message);
 				session.write(message);
 			}else if(command == 0x00){
-				
+				int cid = ByteUtil.byteArrayToInt(((MCPPacket) message).getCID());
+				if(cid == 1){
+					((MCPPacket) message).setDATA(ByteUtil.serverToByte("127.0.0.1", 0x14));
+					((MCPPacket) message).calCRC();
+				}else if(cid == 2){
+					((MCPPacket) message).setDATA(ByteUtil.serverToByte("7000", 0x05));
+					((MCPPacket) message).calCRC();
+				}else if(cid == 0xFE){
+					((MCPPacket) message).setDATA(ByteUtil.serverToByte("AS121WE", 0x14));
+					((MCPPacket) message).calCRC();
+				}else if(cid == 0xff){
+					((MCPPacket) message).setDATA(ByteUtil.serverToByte("21DAS2", 0x14));
+					((MCPPacket) message).calCRC();
+				}else if (cid == 0x03) {
+					((MCPPacket) message).setDATA(ByteUtil.intToByteArray(10, 0x02));
+					((MCPPacket) message).calCRC();
+				}
+				session.write(message);
 			}
         }
     }

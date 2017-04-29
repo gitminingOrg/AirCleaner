@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import air.cleaner.model.MCPPacket;
 import air.cleaner.model.HeartbeatMCPPacket;
+import air.cleaner.utils.ByteUtil;
 
 public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 	public static Logger LOG = LoggerFactory.getLogger(MCPPacketDecoder.class);
@@ -20,7 +21,7 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 		if(in.remaining() >= 19){
 			byte[] FRH = new byte[1];
 			in.get(FRH);
-			
+
 			byte[] CTF = new byte[1];
 			in.get(CTF);
 			
@@ -33,11 +34,12 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 			byte[] LEN = new byte[1];
 			in.get(LEN);
 			
-			int length = LEN[0];
+			int length = ByteUtil.byteArrayToInt(LEN);
 			
 			byte[] DATA = new byte[length];
 			if(in.remaining() < length+3){
 				//reset position, turn on to the next packet
+				LOG.error("remain size is " + in.remaining() + ",data need: " +length);
 				in.reset();
 				return false;
 			}

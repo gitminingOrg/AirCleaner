@@ -32,8 +32,8 @@ public class MCPPacketHandler extends IoHandlerAdapter{
     public void setSessionCacheManager(SessionCacheManager sessionCacheManager) {
 		this.sessionCacheManager = sessionCacheManager;
 	}
-	public static Set<Integer> deviceSet = new ImmutableSet.Builder<Integer>().add(0x01).add(0x02).add(0x03).add(0x09).add(0x0A).add(0x0B).build();
-    public static Set<Integer> statusSet = new ImmutableSet.Builder<Integer>().add(0x04).add(0x05).add(0x06).add(0x07).add(0x08).build();
+	public static Set<Integer> deviceSet = new ImmutableSet.Builder<Integer>().add(0x01).add(0x02).add(0x03).add(0x09).add(0xFE).add(0xFF).build();
+    public static Set<Integer> statusSet = new ImmutableSet.Builder<Integer>().add(0x04).add(0x05).add(0x06).add(0x07).add(0x08).add(0x0A).build();
 
 	@Override
 	public void messageReceived(IoSession session, Object message){

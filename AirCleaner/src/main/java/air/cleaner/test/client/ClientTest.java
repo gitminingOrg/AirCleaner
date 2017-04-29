@@ -55,7 +55,7 @@ public class ClientTest extends Thread{
 	        MCPPacket mcpPacket= new MCPPacket(CTF, CID, UID, LEN, ByteUtil.concatAll(DATA, reserve), CRC);
 	        cf.getSession().write(mcpPacket);
 	        try {
-				Thread.sleep(50000);
+				Thread.sleep(500000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
