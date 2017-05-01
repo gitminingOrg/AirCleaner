@@ -10,6 +10,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import air.cleaner.cache.SessionCacheManager;
+import air.cleaner.config.Config;
+import air.cleaner.model.ResultMap;
+import air.cleaner.utils.HttpDeal;
+
+import com.google.gson.Gson;
 
 public class DeviceControlServerInterceptor implements HandlerInterceptor{
 	
@@ -18,6 +23,12 @@ public class DeviceControlServerInterceptor implements HandlerInterceptor{
 	private SessionCacheManager sessionCacheManager;
 	public void setSessionCacheManager(SessionCacheManager sessionCacheManager) {
 		this.sessionCacheManager = sessionCacheManager;
+	}
+	
+	@Autowired
+	private Config config;
+	public void setConfig(Config config) {
+		this.config = config;
 	}
 
 	@Override
@@ -31,8 +42,30 @@ public class DeviceControlServerInterceptor implements HandlerInterceptor{
 			if (sessionCacheManager.getSession(token) != null) {
 				return true;
 			}else{
-				String server = "localhost:8080";
-				response.sendRedirect("http://"+server+request.getRequestURI()+"?"+request.getQueryString());
+				String local = config.getLocalDomain();
+				String port = config.getWebPort();
+				String url = "http://"+config.getNotifyServer()+":"+config.getNotifyPort()+config.getNotifyPath()+"/"+token;
+				String notifyString = HttpDeal.getResponse(url);
+				LOG.info(url + " : " +  notifyString);
+				Gson gson = new Gson();
+				ResultMap resultMap = gson.fromJson(notifyString, ResultMap.class);
+				if (resultMap.getStatus() == ResultMap.STATUS_FAILURE) {
+					LOG.debug("device unavailable");
+					return true;
+				}else if(resultMap.getStatus() == ResultMap.STATUS_SUCCESS){
+					//if local, session unavailable
+					String ip = (String) resultMap.getContents().get("ip");
+					if(ip.equals(local)){
+						LOG.debug("session unavailable");
+						return true;
+					}else{
+						//remote, send redirect
+						String redirectURL = "http://"+ip+request.getRequestURI()+"?"+request.getQueryString();
+						response.sendRedirect(redirectURL);
+					}
+					
+				}
+				
 				return false;
 			}
 		}

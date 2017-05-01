@@ -36,6 +36,9 @@ public class ClientHandler extends IoHandlerAdapter{
 				}else if (cid == 0x03) {
 					((MCPPacket) message).setDATA(ByteUtil.intToByteArray(10, 0x02));
 					((MCPPacket) message).calCRC();
+				}else if (cid == 0xFD) {
+					((MCPPacket) message).setDATA(ByteUtil.intToByteArray(212, 0x01));
+					((MCPPacket) message).calCRC();
 				}
 				session.write(message);
 			}

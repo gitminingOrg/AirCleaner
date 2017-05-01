@@ -1,7 +1,5 @@
 package air.cleaner.mina;
 
-import java.util.Set;
-
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.IoFuture;
 import org.apache.mina.core.future.IoFutureListener;
@@ -16,8 +14,7 @@ import air.cleaner.device.service.DeviceReceiveService;
 import air.cleaner.model.HeartbeatMCPPacket;
 import air.cleaner.model.MCPPacket;
 import air.cleaner.utils.ByteUtil;
-
-import com.google.common.collect.ImmutableSet;
+import air.cleaner.utils.Constant;
 
 public class MCPPacketHandler extends IoHandlerAdapter{
 	public static Logger LOG = LoggerFactory.getLogger(MCPPacketHandler.class);
@@ -32,9 +29,6 @@ public class MCPPacketHandler extends IoHandlerAdapter{
     public void setSessionCacheManager(SessionCacheManager sessionCacheManager) {
 		this.sessionCacheManager = sessionCacheManager;
 	}
-	public static Set<Integer> deviceSet = new ImmutableSet.Builder<Integer>().add(0x01).add(0x02).add(0x03).add(0x09).add(0xFE).add(0xFF).build();
-    public static Set<Integer> statusSet = new ImmutableSet.Builder<Integer>().add(0x04).add(0x05).add(0x06).add(0x07).add(0x08).add(0x0A).build();
-
 	@Override
 	public void messageReceived(IoSession session, Object message){
 	
@@ -46,7 +40,7 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 			
 			if (message instanceof HeartbeatMCPPacket) {
 				//receive heartbeat, update status
-				LOG.debug("received status message :"+message);
+				LOG.info("heartbeat message received:"+message);
 				HeartbeatMCPPacket packet = (HeartbeatMCPPacket) message;
 				deviceReceiveService.updateCacheCleanerStatus(packet);
 				//send return packet
@@ -57,10 +51,10 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 			}else{
 				//classify device info command and cleaner status command
 				int command = ByteUtil.byteArrayToInt(((MCPPacket) message).getCID());
-				if(deviceSet.contains(command)){
+				if(Constant.deviceSet.contains(command)){
 					deviceReceiveService.updateCacheDeviceInfo((MCPPacket)message);
 					LOG.info("new message of device info" + message);
-				}else if(statusSet.contains(command)){
+				}else if(Constant.statusSet.contains(command)){
 					deviceReceiveService.updateSingleCacheCleanerStatus((MCPPacket)message);
 					LOG.info("new message of cleaner status" + message);
 				}else{

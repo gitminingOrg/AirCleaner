@@ -1,5 +1,9 @@
 package air.cleaner.utils;
 
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+
 public class Constant {
 	public static final int CTF_QUERY = 0x00;
 	public static final int CTF_SET = 0x01;
@@ -24,7 +28,11 @@ public class Constant {
 	public static final String SERVER_PORT = "serverPort";
 	public static final String HEARTBEAT_GAP = "heartbeatGap";
 	public static final String CYCLE = "cycle";
+	public static final String DEVICETYPE = "deviceType";
 	public static final String FIRMWARE = "firmware";
 	public static final String HARDWARE = "hardware";
 	
+	public static final Set<Integer> deviceSet = new ImmutableSet.Builder<Integer>().add(0x01).add(0x02).add(0x03).add(0xFD).add(0xFE).add(0xFF).build();
+    public static final Set<Integer> statusSet = new ImmutableSet.Builder<Integer>().add(0x04).add(0x05).add(0x06).add(0x07).add(0x08).add(0x09).add(0x0A).build();
+
 }

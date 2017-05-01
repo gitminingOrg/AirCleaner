@@ -19,6 +19,9 @@ public class DeviceInfo implements Serializable{
 	@Command(id=0x03, name=Constant.HEARTBEAT_GAP,length=0x02)
 	private int heartbeatGap;
 	
+	@Command(id = 0xFD, name = Constant.DEVICETYPE, length=0x01)
+	private int deviceType;
+	
 	@Command(id = 0xFE, name = Constant.FIRMWARE, length = 0x14)
 	private String firmware;
 
@@ -69,6 +72,12 @@ public class DeviceInfo implements Serializable{
 	}
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+	public int getDeviceType() {
+		return deviceType;
+	}
+	public void setDeviceType(int deviceType) {
+		this.deviceType = deviceType;
 	}
 
 }

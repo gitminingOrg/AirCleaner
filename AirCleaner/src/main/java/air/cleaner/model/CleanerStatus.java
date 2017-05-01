@@ -35,7 +35,7 @@ public class CleanerStatus implements Serializable{
 	
 	@Command(id=0x05,length=1,name=Constant.WORKMODE)
 	@AQIData(start=0x0B,length=1,name=Constant.WORKMODE)
-	private int workMode;
+	private int workMode; // 0 自动模式, 1 手动模式, 2 睡眠模式
 	
 	@Command(id=0x07,length=1,name=Constant.UV)
 	@AQIData(start=0x0C,length=1,name=Constant.UV)
@@ -49,10 +49,9 @@ public class CleanerStatus implements Serializable{
 	@AQIData(start=0x0E,length=1,name=Constant.LIGHT)
 	private int light;
 	
-	
 	@Command(id=0x09, name=Constant.CYCLE,length=0x01)
 	@AQIData(start=0x0F,length=1,name=Constant.CYCLE)
-	private int cycle;
+	private int cycle;   //0 内循环, 1 外循环
 
 	public long getDeviceID() {
 		return deviceID;

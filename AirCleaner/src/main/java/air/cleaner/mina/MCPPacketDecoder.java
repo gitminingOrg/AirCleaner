@@ -21,7 +21,7 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 		if(in.remaining() >= 19){
 			byte[] FRH = new byte[1];
 			in.get(FRH);
-
+			
 			byte[] CTF = new byte[1];
 			in.get(CTF);
 			
@@ -39,8 +39,7 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 			byte[] DATA = new byte[length];
 			if(in.remaining() < length+3){
 				//reset position, turn on to the next packet
-				LOG.error("remain size is " + in.remaining() + ",data need: " +length);
-				in.reset();
+				LOG.warn("remain size is " + in.remaining() + ",MCPPacket data module need: " +length);
 				return false;
 			}
 			in.get(DATA);
@@ -63,6 +62,7 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 				return true;
 			}
 		}
+		LOG.warn("received packet too short for MCPPacket");
 		return false;
 	}
 

@@ -114,7 +114,7 @@ public class MCPPacket implements Serializable{
 		byte[] result = toByte();
 		StringBuffer sb = new StringBuffer();
 		for (byte b : result) {
-			sb.append(String.format("%02x", b).toUpperCase());
+			sb.append(String.format("%02x", b).toUpperCase()).append(" ");
 		}
 		return sb.toString();
 	}

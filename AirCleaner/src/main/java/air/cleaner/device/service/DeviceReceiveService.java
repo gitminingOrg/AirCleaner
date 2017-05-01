@@ -201,7 +201,7 @@ public class DeviceReceiveService {
 			LOG.warn("update device info failed!");
 		}
 		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
-		deviceInfo.setUpdateTime(TimeUtil.getCurrentTime());
+		//deviceInfo.setUpdateTime(TimeUtil.getCurrentTime());
 		return result;
 	}
 }
