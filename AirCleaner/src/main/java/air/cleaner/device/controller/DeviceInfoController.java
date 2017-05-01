@@ -12,7 +12,7 @@ import air.cleaner.device.service.DeviceReceiveService;
 import air.cleaner.model.DeviceInfo;
 import air.cleaner.model.ResultMap;
 import air.cleaner.utils.Constant;
-@RequestMapping(value="/info")
+@RequestMapping(value="/device/info")
 @RestController
 public class DeviceInfoController {
 	@Autowired
@@ -26,10 +26,11 @@ public class DeviceInfoController {
 		this.deviceReceiveService = deviceReceiveService;
 	}
 
-	@RequestMapping(value="/device/{deviceID}")
-	public ResultMap getDeviceInfo(@PathVariable("deviceID")long deviceID){
+	@RequestMapping(value="/device")
+	public ResultMap getDeviceInfo(HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		DeviceInfo deviceInfo = deviceReceiveService.getDeviceInfo(deviceID);
+		long device = Long.parseLong(request.getParameter("token"));
+		DeviceInfo deviceInfo = deviceReceiveService.getDeviceInfo(device);
 		if (deviceInfo == null) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
 			resultMap.setInfo("没有找到相应的设备");
@@ -40,10 +41,11 @@ public class DeviceInfoController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/server/{deviceID}")
-	public ResultMap serverIPControl(HttpServletRequest request,@PathVariable("deviceID") long device){
+	@RequestMapping(value="/server")
+	public ResultMap serverIPControl(HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
 		String server = request.getParameter("server");
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.infoControl(Constant.SERVER_IP, server, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -55,9 +57,10 @@ public class DeviceInfoController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/port/{deviceID}/{port}")
-	public ResultMap serverPortControl(@PathVariable("deviceID") long device, @PathVariable("port")String port){
+	@RequestMapping(value="/port/{port}")
+	public ResultMap serverPortControl(@PathVariable("port")String port, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.infoControl(Constant.SERVER_PORT, port, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -69,9 +72,10 @@ public class DeviceInfoController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/heartbeat/{deviceID}/{gap}")
-	public ResultMap heartbeatControl(@PathVariable("deviceID") long device, @PathVariable("gap") int gap){
+	@RequestMapping(value="/heartbeat/{gap}")
+	public ResultMap heartbeatControl(@PathVariable("gap") int gap, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.infoControl(Constant.HEARTBEAT_GAP, gap, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -83,10 +87,10 @@ public class DeviceInfoController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/command/{deviceID}/{CTF}/{command}/{data}")
-	public ResultMap generalCommand(@PathVariable("deviceID")long device, @PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data){
+	@RequestMapping(value="/command/{CTF}/{command}/{data}")
+	public ResultMap generalCommand(@PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.commandHandler(CTF, command, data, device, DeviceInfo.class);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);

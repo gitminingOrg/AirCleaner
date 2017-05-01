@@ -48,6 +48,11 @@ public class CleanerStatus implements Serializable{
 	@Command(id=0x0A, length=1,name=Constant.LIGHT)
 	@AQIData(start=0x0E,length=1,name=Constant.LIGHT)
 	private int light;
+	
+	
+	@Command(id=0x09, name=Constant.CYCLE,length=0x01)
+	@AQIData(start=0x0F,length=1,name=Constant.CYCLE)
+	private int cycle;
 
 	public long getDeviceID() {
 		return deviceID;
@@ -140,9 +145,15 @@ public class CleanerStatus implements Serializable{
 	public int getLight() {
 		return light;
 	}
-
 	public void setLight(int light) {
 		this.light = light;
+	}
+	public int getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(int cycle) {
+		this.cycle = cycle;
 	}
 
 	/**

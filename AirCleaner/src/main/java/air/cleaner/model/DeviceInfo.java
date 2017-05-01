@@ -19,9 +19,6 @@ public class DeviceInfo implements Serializable{
 	@Command(id=0x03, name=Constant.HEARTBEAT_GAP,length=0x02)
 	private int heartbeatGap;
 	
-	@Command(id=0x09, name=Constant.CYCLE,length=0x01)
-	private int cycle;
-	
 	@Command(id = 0xFE, name = Constant.FIRMWARE, length = 0x14)
 	private String firmware;
 
@@ -66,12 +63,6 @@ public class DeviceInfo implements Serializable{
 	}
 	public void setServerPort(String serverPort) {
 		this.serverPort = serverPort;
-	}
-	public int getCycle() {
-		return cycle;
-	}
-	public void setCycle(int cycle) {
-		this.cycle = cycle;
 	}
 	public String getUpdateTime() {
 		return updateTime;

@@ -1,5 +1,7 @@
 package air.cleaner.device.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +13,7 @@ import air.cleaner.model.CleanerStatus;
 import air.cleaner.model.ResultMap;
 import air.cleaner.utils.Constant;
 
-@RequestMapping(value="/status")
+@RequestMapping(value="/device/status")
 @RestController
 public class CleanerStatusController {
 	@Autowired
@@ -53,9 +55,10 @@ public class CleanerStatusController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/heat/{deviceID}/{mode}")
-	public ResultMap heatControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+	@RequestMapping(value="/heat/{mode}")
+	public ResultMap heatControl(@PathVariable("mode")int mode, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.statusControl(Constant.HEAT, mode, device);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
@@ -67,9 +70,10 @@ public class CleanerStatusController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/UV/{deviceID}/{mode}")
-	public ResultMap uvControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+	@RequestMapping(value="/UV/{mode}")
+	public ResultMap uvControl(@PathVariable("mode")int mode, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.statusControl(Constant.UV, mode, device);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
@@ -81,9 +85,10 @@ public class CleanerStatusController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/mode/{deviceID}/{mode}")
-	public ResultMap modeControl(@PathVariable("deviceID")long device, @PathVariable("mode")int mode){
+	@RequestMapping(value="/mode/{mode}")
+	public ResultMap modeControl(@PathVariable("mode")int mode, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.statusControl(Constant.UV, mode, device);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
@@ -95,9 +100,10 @@ public class CleanerStatusController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/velocity/{deviceID}/{velocity}")
-	public ResultMap velocityControl(@PathVariable("deviceID")long device, @PathVariable("velocity")int velocity){
+	@RequestMapping(value="/velocity/{velocity}")
+	public ResultMap velocityControl(@PathVariable("velocity")int velocity, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.statusControl(Constant.VELOCITY, velocity, device);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
@@ -109,10 +115,10 @@ public class CleanerStatusController {
 		return resultMap;
 	}
 	
-	@RequestMapping(value="/command/{deviceID}/{CTF}/{command}/{data}")
-	public ResultMap generalCommand(@PathVariable("deviceID")long device, @PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data){
+	@RequestMapping(value="/command/{CTF}/{command}/{data}")
+	public ResultMap generalCommand(@PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		
+		long device = Long.parseLong(request.getParameter("token"));
 		boolean result = deviceControlService.commandHandler(CTF, command, data, device, CleanerStatus.class);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);
