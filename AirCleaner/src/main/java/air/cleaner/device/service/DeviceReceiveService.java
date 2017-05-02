@@ -21,7 +21,6 @@ import air.cleaner.utils.ByteUtil;
 import air.cleaner.utils.Constant;
 import air.cleaner.utils.MethodUtil;
 import air.cleaner.utils.PacketSendUtil;
-import air.cleaner.utils.TimeUtil;
 
 @Service
 public class DeviceReceiveService {
@@ -74,12 +73,13 @@ public class DeviceReceiveService {
 	 */
 	public void updateCacheDeviceInfo(MCPPacket packet){
 		int command = ByteUtil.byteArrayToInt(packet.getCID());
-		long deviceID = ByteUtil.byteArrayToLong(packet.getUID());
+		String deviceID = ByteUtil.byteToHex(packet.getUID());
 		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
 		
 		if (deviceInfo == null) {
 			//////init device
 			deviceInfo = new DeviceInfo();
+			deviceInfo.setDeviceID(deviceID);
 		}
 		Field[] fields = DeviceInfo.class.getDeclaredFields();
 		for (Field field : fields) {
@@ -119,7 +119,7 @@ public class DeviceReceiveService {
 	public void updateSingleCacheCleanerStatus(MCPPacket packet){
 		int command = ByteUtil.byteArrayToInt(packet.getCID());
 		LOG.info("控制指令为："+command);
-		long deviceID = ByteUtil.byteArrayToLong(packet.getUID());
+		String deviceID = ByteUtil.byteToHex(packet.getUID());
 		CleanerStatus cleanerStatus = cleanerStatusCacheManager.getCleanerStatus(deviceID);
 		
 		if (cleanerStatus == null) {
@@ -165,7 +165,7 @@ public class DeviceReceiveService {
 		}
 	}
 	
-	public CleanerStatus getCleanerStatus(long deviceID){
+	public CleanerStatus getCleanerStatus(String deviceID){
 		return cleanerStatusCacheManager.getCleanerStatus(deviceID);
 	}
 	
@@ -174,12 +174,12 @@ public class DeviceReceiveService {
 	 * @param deviceID
 	 * @return
 	 */
-	public DeviceInfo getDeviceInfo(long deviceID){
+	public DeviceInfo getDeviceInfo(String deviceID){
 		boolean update = updateDeviceInfo(deviceID);
 		return deviceInfoCacheManager.getDeviceInfo(deviceID);
 	}
 	
-	private boolean updateDeviceInfo(long deviceID){
+	private boolean updateDeviceInfo(String deviceID){
 		boolean result = true;
 		IoSession session = sessionCacheManager.getSession(deviceID);
 		if (session == null) {
@@ -191,7 +191,7 @@ public class DeviceReceiveService {
 				Command command = field.getAnnotation(Command.class);
 				int ctf = Constant.CTF_QUERY;
 				int cid = command.id();
-				long uid = deviceID;
+				String uid = deviceID;
 				int len = command.length();
 				byte[] data = new byte[len];
 				result = PacketSendUtil.sentPacket(session, ctf, cid, uid, len, data) && result;
@@ -200,8 +200,6 @@ public class DeviceReceiveService {
 		if(!result){
 			LOG.warn("update device info failed!");
 		}
-		DeviceInfo deviceInfo = deviceInfoCacheManager.getDeviceInfo(deviceID);
-		//deviceInfo.setUpdateTime(TimeUtil.getCurrentTime());
 		return result;
 	}
 }

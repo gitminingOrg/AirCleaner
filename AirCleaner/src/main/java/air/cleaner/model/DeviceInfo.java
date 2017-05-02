@@ -9,7 +9,7 @@ public class DeviceInfo implements Serializable{
 
 	private static final long serialVersionUID = -8263670463998041046L;
 	
-	private long deviceID;
+	private String deviceID;
 	@Command(id=0x01, name=Constant.SERVER_IP,length=0x14)
 	private String serverIP;
 	
@@ -30,10 +30,10 @@ public class DeviceInfo implements Serializable{
 	
 	private String updateTime;
 	
-	public long getDeviceID() {
+	public String getDeviceID() {
 		return deviceID;
 	}
-	public void setDeviceID(long deviceID) {
+	public void setDeviceID(String deviceID) {
 		this.deviceID = deviceID;
 	}
 	public String getServerIP() {

@@ -2,6 +2,7 @@ package air.cleaner.cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class SessionCacheManager {
 	
 	private Map<String, IoSession> sessionMap = new HashMap<String, IoSession>();
 
-	public IoSession getSession(long deviceID){
+	public IoSession getSession(String deviceID){
 		String key = SESSION_+deviceID;
 		IoSession session = (IoSession) sessionMap.get(key);
 		if (session == null) {
@@ -28,7 +29,7 @@ public class SessionCacheManager {
 		return session;
 	}
 	
-	public boolean updateSession(long deviceID, IoSession session){
+	public boolean updateSession(String deviceID, IoSession session){
 		String key = SESSION_+deviceID;
 		if (sessionMap.get(key) != null) {
 			sessionMap.replace(key, session);
@@ -38,11 +39,15 @@ public class SessionCacheManager {
 		return true;
 	}
 	
-	public boolean removeSession(long deviceID){
+	public boolean removeSession(String deviceID){
 		IoSession session =  sessionMap.remove(deviceID);
 		if (session != null) {
 			return true;
 		}
 		return false;
+	}
+	
+	public Set<String> getAllDeviceID(){
+		return sessionMap.keySet();
 	}
 }

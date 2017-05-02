@@ -23,7 +23,7 @@ public class CleanerStatusCacheManager {
 	 * @param cleanerID
 	 * @return
 	 */
-	public CleanerStatus getCleanerStatus(long cleanerID){
+	public CleanerStatus getCleanerStatus(String cleanerID){
 		String key = "status."+cleanerID;
 		CleanerStatus status = (CleanerStatus) memcachedClient.get(key);
 		return status;
@@ -35,12 +35,12 @@ public class CleanerStatusCacheManager {
 	 * @return
 	 */
 	public boolean updateCleanerStatus(CleanerStatus cleanerStatus){
-		long deviceID = cleanerStatus.getDeviceID();
-		if (deviceID < 0) {
+		String deviceID = cleanerStatus.getDeviceID();
+		if (deviceID == null) {
 			return false;
 		}
 		String key = "status."+deviceID;
-		LOG.debug("UPDATE STATUS : " + key);
+		LOG.info("UPDATE STATUS : " + key);
 		if (memcachedClient.get(key) == null) {
 			memcachedClient.add(key, 0, cleanerStatus);
 		}else{

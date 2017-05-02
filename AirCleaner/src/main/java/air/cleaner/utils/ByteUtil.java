@@ -95,4 +95,43 @@ public class ByteUtil {
 		}
 		return result;
 	}
+	
+	public static String byteToHex(byte[] input) {
+		StringBuffer sb = new StringBuffer();
+		for (byte b : input) {
+			sb.append(String.format("%02x", b).toUpperCase());
+		}
+		return sb.toString();
+	}
+	
+	public static byte[] hexStringByteTo(String hex, int length) {
+		if(hex.length() % 2 != 0){
+			hex = "0" + hex;
+		}
+		byte[] result = new byte[length];
+		int index = length - 1;
+		for(int i=hex.length()-1; i>=1; i=i-2){
+			if(index < 0){
+				break;
+			}
+			int low = hexCharToInt(hex.charAt(i));
+			int high = hexCharToInt(hex.charAt(i - 1));
+			int value = high * 16 + low;
+			result[index] = (byte)value; 
+			index--;
+		}
+		return result;
+	}
+	
+	public static int hexCharToInt(char i){
+		if(i >= '0' && i<='9'){
+			return i-'0';
+		}else if (i >= 'A' && i<='F') {
+			return i - 'A' + 10;
+		}else if (i >= 'a' && i <='f') {
+			return i - 'a' + 10;
+		}else{
+			return 0;
+		}
+	}
 }

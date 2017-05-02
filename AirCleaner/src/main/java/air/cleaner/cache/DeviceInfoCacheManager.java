@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import air.cleaner.model.DeviceInfo;
+import air.cleaner.utils.TimeUtil;
 
 @Repository
 public class DeviceInfoCacheManager {
@@ -16,17 +17,18 @@ public class DeviceInfoCacheManager {
 		this.memcachedClient = memcachedClient;
 	}
 
-	public DeviceInfo getDeviceInfo(long deviceID){
+	public DeviceInfo getDeviceInfo(String deviceID){
 		String key = DEVICE_+deviceID;
 		DeviceInfo deviceInfo = (DeviceInfo) memcachedClient.get(key);
 		return deviceInfo;
 	}
 	
 	public boolean updateDevice(DeviceInfo deviceInfo){
-		if (deviceInfo.getDeviceID() < 0) {
+		if (deviceInfo.getDeviceID() == null) {
 			return false;
 		}
 		String key = DEVICE_+deviceInfo.getDeviceID();
+		deviceInfo.setUpdateTime(TimeUtil.getCurrentTime());
 		if (memcachedClient.get(key) == null) {
 			memcachedClient.add(key, 0, deviceInfo);
 		}else{

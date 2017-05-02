@@ -18,11 +18,11 @@ public class PacketSendUtil {
 	 * @param data
 	 * @return
 	 */
-	public static boolean sentPacket(IoSession session, int ctfValue, int cidValue, long uidValue, int length, byte[] data){
+	public static boolean sentPacket(IoSession session, int ctfValue, int cidValue, String uidValue, int length, byte[] data){
 		//encapsulate mcppacket
 		byte[] CTF = ByteUtil.intToByteArray(ctfValue, 1);
 		byte[] CID = ByteUtil.intToByteArray(cidValue, 1);
-		byte[] UID = ByteUtil.longToByteArray(uidValue, 12);
+		byte[] UID = ByteUtil.hexStringByteTo(uidValue, 12);
 		byte[] LEN = ByteUtil.intToByteArray(length, 1);
 		
 		byte[] combine = ByteUtil.concatAll(CTF, CID, UID, LEN, data);

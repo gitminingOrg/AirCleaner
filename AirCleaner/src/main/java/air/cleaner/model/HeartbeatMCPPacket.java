@@ -24,7 +24,7 @@ public class HeartbeatMCPPacket extends MCPPacket implements Serializable{
 
 	public CleanerStatus packetToCleanerStatus(){
 		CleanerStatus cleanerStatus = new CleanerStatus();
-		long deviceID = ByteUtil.byteArrayToLong(getUID());
+		String deviceID = ByteUtil.byteToHex(getUID());
 		cleanerStatus.setDeviceID(deviceID);
 		
 		byte[] data = getDATA();
@@ -60,7 +60,7 @@ public class HeartbeatMCPPacket extends MCPPacket implements Serializable{
 	}
 	
 	public static boolean checkHeartbeatMCPPacket(MCPPacket packet){
-		if(ByteUtil.byteArrayToInt(packet.getCID()) != 0 ){
+		if(ByteUtil.byteArrayToInt(packet.getCID()) != 0x00 ){
 			return false;
 		}
 		

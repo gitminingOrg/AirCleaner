@@ -29,7 +29,7 @@ public class DeviceInfoController {
 	@RequestMapping(value="/device")
 	public ResultMap getDeviceInfo(HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		long device = Long.parseLong(request.getParameter("token"));
+		String device = request.getParameter("token");
 		DeviceInfo deviceInfo = deviceReceiveService.getDeviceInfo(device);
 		if (deviceInfo == null) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -45,7 +45,7 @@ public class DeviceInfoController {
 	public ResultMap serverIPControl(HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
 		String server = request.getParameter("server");
-		long device = Long.parseLong(request.getParameter("token"));
+		String device = request.getParameter("token");
 		boolean result = deviceControlService.infoControl(Constant.SERVER_IP, server, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -60,7 +60,7 @@ public class DeviceInfoController {
 	@RequestMapping(value="/port/{port}")
 	public ResultMap serverPortControl(@PathVariable("port")String port, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		long device = Long.parseLong(request.getParameter("token"));
+		String device = request.getParameter("token");
 		boolean result = deviceControlService.infoControl(Constant.SERVER_PORT, port, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -75,7 +75,7 @@ public class DeviceInfoController {
 	@RequestMapping(value="/heartbeat/{gap}")
 	public ResultMap heartbeatControl(@PathVariable("gap") int gap, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		long device = Long.parseLong(request.getParameter("token"));
+		String device = request.getParameter("token");
 		boolean result = deviceControlService.infoControl(Constant.HEARTBEAT_GAP, gap, device);
 		if (!result) {
 			resultMap.setStatus(ResultMap.STATUS_FAILURE);
@@ -90,7 +90,7 @@ public class DeviceInfoController {
 	@RequestMapping(value="/command/{CTF}/{command}/{data}")
 	public ResultMap generalCommand(@PathVariable("CTF")int CTF, @PathVariable("command")String command, @PathVariable("data") int data, HttpServletRequest request){
 		ResultMap resultMap = new ResultMap();
-		long device = Long.parseLong(request.getParameter("token"));
+		String device = request.getParameter("token");
 		boolean result = deviceControlService.commandHandler(CTF, command, data, device, DeviceInfo.class);
 		if (result) {
 			resultMap.setStatus(ResultMap.STATUS_SUCCESS);

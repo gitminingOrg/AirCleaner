@@ -31,6 +31,9 @@ public class DeviceControlServerInterceptor implements HandlerInterceptor{
 		this.config = config;
 	}
 
+	/**
+	 * check if the request should be redirect to a remote host
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
@@ -38,7 +41,7 @@ public class DeviceControlServerInterceptor implements HandlerInterceptor{
 		if(!request.getParameterMap().containsKey("token")){
 			return true;
 		}else{
-			long token = Long.parseLong(request.getParameter("token"));
+			String token = request.getParameter("token");
 			if (sessionCacheManager.getSession(token) != null) {
 				return true;
 			}else{
@@ -60,7 +63,7 @@ public class DeviceControlServerInterceptor implements HandlerInterceptor{
 						return true;
 					}else{
 						//remote, send redirect
-						String redirectURL = "http://"+ip+request.getRequestURI()+"?"+request.getQueryString();
+						String redirectURL = "http://"+ip+":"+port+request.getRequestURI()+"?"+request.getQueryString();
 						response.sendRedirect(redirectURL);
 					}
 					

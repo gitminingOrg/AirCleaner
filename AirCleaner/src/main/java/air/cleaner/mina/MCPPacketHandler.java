@@ -35,7 +35,7 @@ public class MCPPacketHandler extends IoHandlerAdapter{
 		LOG.debug("received message :"+message);
 		if(message instanceof MCPPacket){
 			//update session of device in cache
-			long deviceID = ByteUtil.byteArrayToLong(((MCPPacket) message).getUID());
+			String deviceID = ByteUtil.byteToHex(((MCPPacket) message).getUID());
 			sessionCacheManager.updateSession(deviceID, session);
 			
 			if (message instanceof HeartbeatMCPPacket) {

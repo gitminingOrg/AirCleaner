@@ -13,7 +13,7 @@ public class CleanerStatus implements Serializable{
 	
 	private static final long serialVersionUID = 3050484443988023484L;
 	
-	private long deviceID;
+	private String deviceID;
 	@AQIData(start=0x00,length=2,name=Constant.PM25)
 	private int pm25;
 	@AQIData(start=0x02,length=1,name=Constant.TEMPERATURE)
@@ -53,11 +53,11 @@ public class CleanerStatus implements Serializable{
 	@AQIData(start=0x0F,length=1,name=Constant.CYCLE)
 	private int cycle;   //0 内循环, 1 外循环
 
-	public long getDeviceID() {
+	public String getDeviceID() {
 		return deviceID;
 	}
 
-	public void setDeviceID(long deviceID) {
+	public void setDeviceID(String deviceID) {
 		this.deviceID = deviceID;
 	}
 

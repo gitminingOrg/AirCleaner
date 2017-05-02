@@ -61,8 +61,9 @@ public class MCPPacketDecoder extends CumulativeProtocolDecoder {
 			if(in.hasRemaining()){
 				return true;
 			}
+		}else{
+			LOG.warn("received packet too short for MCPPacket");
 		}
-		LOG.warn("received packet too short for MCPPacket");
 		return false;
 	}
 

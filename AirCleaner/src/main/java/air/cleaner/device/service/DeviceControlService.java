@@ -34,7 +34,7 @@ public class DeviceControlService {
 	 * @param deviceID
 	 * @return
 	 */
-	public <T> boolean statusControl(String command, T input, long deviceID){
+	public <T> boolean statusControl(String command, T input, String deviceID){
 		int CTF = Constant.CTF_SET;
 		return commandHandler(CTF, command, input, deviceID, CleanerStatus.class);
 	}
@@ -46,7 +46,7 @@ public class DeviceControlService {
 	 * @param deviceID
 	 * @return
 	 */
-	public <T> boolean statusQuery(String command, T input, long deviceID){
+	public <T> boolean statusQuery(String command, T input, String deviceID){
 		int CTF = Constant.CTF_QUERY;
 		return commandHandler(CTF, command, input, deviceID, CleanerStatus.class);
 	}
@@ -58,7 +58,7 @@ public class DeviceControlService {
 	 * @param deviceID
 	 * @return
 	 */
-	public <T> boolean infoControl(String command, T input, long deviceID){
+	public <T> boolean infoControl(String command, T input, String deviceID){
 		int CTF = Constant.CTF_SET;
 		return commandHandler(CTF, command, input, deviceID, DeviceInfo.class);
 	}
@@ -70,7 +70,7 @@ public class DeviceControlService {
 	 * @param deviceID
 	 * @return
 	 */
-	public <T> boolean infoQuery(String command, T input, long deviceID){
+	public <T> boolean infoQuery(String command, T input, String deviceID){
 		int CTF = Constant.CTF_QUERY;
 		return commandHandler(CTF, command, input, deviceID, DeviceInfo.class);
 	}
@@ -84,7 +84,7 @@ public class DeviceControlService {
 	 * @param clazz
 	 * @return
 	 */
-	public <T> boolean commandHandler(int CTF, String command, T input, long deviceID, Class clazz){
+	public <T> boolean commandHandler(int CTF, String command, T input, String deviceID, Class clazz){
 		byte[] data = null;
 		Field[] fields = clazz.getDeclaredFields();
 		
@@ -123,7 +123,7 @@ public class DeviceControlService {
 	 * @param mode
 	 * @return
 	 */
-	public boolean setMode(long deviceID, String mode){
+	public boolean setMode(String deviceID, String mode){
 		if(mode.equals(Constant.AUTO)){
 			
 		}else if (mode.equals(Constant.SLEEP)) {
